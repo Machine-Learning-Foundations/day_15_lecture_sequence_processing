@@ -15,6 +15,24 @@
 \pgfplotsset{compat=newest}
 \usepgfplotslibrary{groupplots,dateplot}
 \usetikzlibrary{patterns,shapes.arrows}
+%answer from Qrrbrbirlbel for https://tex.stackexchange.com/questions/134067/circuitikz-wire-kink-thingy-when-wires-cross
+\tikzset{
+  declare function={% in case of CVS which switches the arguments of atan2
+    atan3(\a,\b)=ifthenelse(atan2(0,1)==90, atan2(\a,\b), atan2(\b,\a));},
+  kinky cross radius/.initial=+.125cm,
+  @kinky cross/.initial=+, kinky crosses/.is choice,
+  kinky crosses/left/.style={@kinky cross=-},kinky crosses/right/.style={@kinky cross=+},
+  kinky cross/.style args={(#1)--(#2)}{
+    to path={
+      let \p{@kc@}=($(\tikztotarget)-(\tikztostart)$),
+          \n{@kc@}={atan3(\p{@kc@})+180} in
+      -- ($(intersection of \tikztostart--{\tikztotarget} and #1--#2)!%
+             \pgfkeysvalueof{/tikz/kinky cross radius}!(\tikztostart)$)
+      arc [ radius     =\pgfkeysvalueof{/tikz/kinky cross radius},
+            start angle=\n{@kc@},
+            delta angle=\pgfkeysvalueof{/tikz/@kinky cross}180 ]
+      -- (\tikztotarget)}}}
+
 \usepackage{standalone}
 \usepackage{adjustbox}
 \usepackage{lmodern}
@@ -50,10 +68,10 @@
 
 \usetheme{metropolis}           % Use metropolis theme
 \setbeamertemplate{caption}[default]
-\title{Foundations of Machine Learning in Python}
+\title{Sequence Processing}
 \date{\today}
 \institute{Uni Bonn}
-\author{the authors}
+\author{Moritz Wolter}
 
 \titlegraphic{\includegraphics[width=2.00cm]{UNI_Bonn_Logo_Standard_RZ.pdf}}
 \begin{document}
@@ -63,21 +81,108 @@
     \frametitle{Overview} 
     \tableofcontents
 
-    \note{TODO}
     \end{frame}
 
-    \section{Section 1}
-    \begin{frame}{Slide 1}
-        \begin{figure}
-            \caption{caption}
-        \end{figure}
-    \note{TODO}
+    \begin{frame}{Motivation}
+      \begin{itemize}
+        \item Thus far we have never integrated information over time.
+        \item We want the ability to create internal memory.
+        \item Consider the sentence: I live in Paris. I speak ...
+        \item ... French.
+        \item Clearly it is likely for someone in Paris to speak French.
+        \item Memory should help networks taking Paris into account when deciding what language is spoken.
+      \end{itemize}
+    \end{frame}
+
+    \section{Recurrent neural networks}
+    \begin{frame}{Elman-recurrent neural networks}
+    A simple solution is to add a state to the network and feed this state recurrently back into the network \cite{elman1990finding},
+    \begin{align}
+        \overline{\mathbf{h}_t} &= \mathbf{W}_h \mathbf{h}_t 
+            + \mathbf{W}_x \mathbf{x}_t + \mathbf{b}, \label{eq:simple_rnn} \\
+        \mathbf{h}_{t+1} &= f(\overline{\mathbf{h}_t}).
+    \end{align}
+    \end{frame}
+
+    \begin{frame}{Elman-recurrent neural networks}
+      \begin{figure}
+        \includestandalone{./figures/recurrentCell}
+      \end{figure}
+    \end{frame}
+
+    \begin{frame}{Unrolling in Time}
+      \begin{figure}
+        \centering
+        \includestandalone{./figures/unroll_recurrent_cell}
+        \caption{The rolled (left) cell can be unrolled (right) by considering all inputs it saw
+        during the current gradient computation iteration.}
+        \label{fig:unroll_recurrent_cell}
+    \end{figure}
+    \end{frame}
+
+    \begin{frame}{Stability of recurrent connections}
+      For an intuition. Consider a linear network without activations or inputs.
+      \begin{align}
+        \mathbf{h}_{t+1} = \mathbf{W}_h \mathbf{h}_t
+      \end{align}
+      The evolution of the $\mathbf{h}$-sequence is guided by it's largest eigenvalue.
+      If an eigenvalue larger than one exists. The state explodes.
+      If all eigenvalues are smaller than one the state vanishes
+      \cite{goodfellow2016deep}.
+    \end{frame}
+
+    \begin{frame}{Long Short Term Memory (LSTM)}
+      \begin{figure}
+        \includestandalone[width=\linewidth]{./figures/nop_lstm}
+      \end{figure}
+      \cite{greff2016lstm}
+    \end{frame}
+
+    \begin{frame}{Long Short Term Memory (LSTM)}
+      \begin{figure}
+        \includestandalone[width=.6\linewidth]{./figures/lstm}
+      \end{figure}
+      \cite{greff2016lstm}
     \end{frame}
 
 
-    \section{Section 2}
-    \begin{frame}{Frame 2}
-        \cite{dumoulin2016guide}
+    \begin{frame}{Gated recurrent units}
+      \begin{figure}
+      \includestandalone[width=.6\linewidth]{./figures/gru}
+      \end{figure}
+    \end{frame}
+
+    \begin{frame}{Orthogonal networks}
+      TODO
+    \end{frame}
+
+    \begin{frame}{Summary}
+      TODO
+    \end{frame}
+
+    \section{Applications}
+    \begin{frame}{Language Processing}
+      TODO
+    \end{frame}
+
+    \begin{frame}{Speech Processing}
+      TODO
+    \end{frame}
+
+    \begin{frame}{Time-series forecasting}
+      TODO
+    \end{frame}
+
+    %\section{Attention and Transformers}
+    %\begin{frame}{Attention}
+    %  TODO
+    %\end{frame}
+    %\begin{frame}{Transformers}
+    %  TODO
+    %\end{frame}
+
+    \begin{frame}{Conclusion}
+      TODO
     \end{frame}
 
     \begin{frame}{Literature}
