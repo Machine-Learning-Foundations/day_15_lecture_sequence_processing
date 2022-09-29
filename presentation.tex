@@ -336,15 +336,6 @@
       \href{run:./figures/mocap_demo.gif}{Link to mocap demo}
     \end{frame}
 
-
-    %\section{Attention and Transformers}
-    %\begin{frame}{Attention}
-    %  TODO
-    %\end{frame}
-    %\begin{frame}{Transformers}
-    %  TODO
-    %\end{frame}
-
     \begin{frame}{Conclusion}
       \begin{itemize}
         \item RNNs are versatile and suitable for many different sentence processing tasks.
@@ -356,13 +347,37 @@
       \printbibliography
     \end{frame}
 
-    \subsection{Code snippets}
-    \begin{frame}{Sequence coding with dictionaries}
-      TODO
+    \section{Code snippets}
+    \begin{frame}[fragile]{Sequence coding with dictionaries}
+    \begin{python}
+      for int_seq in sequences:
+      char_seq = []
+      for int_char in int_seq:
+          char_seq.append(
+            inv_vocab[int(int_char)])
+      res.append(char_seq)
+    \end{python}
     \end{frame}
 
-    \begin{frame}{Implementing an LSTM}
-      TODo
+    \begin{frame}[fragile]{Implementing the cell equations of an LSTM}
+\begin{python}
+i = nn.sigmoid(dense_i(name='ii')(inputs)
+  + dense_h(name='hi')(h))
+f = nn.sigmoid(dense_i(name='if')(inputs)
+  + dense_h(name='hf')(h))
+g = nn.tanh(dense_i(name='ig')(inputs)
+  + dense_h(name='hg')(h))
+o = nn.sigmoid(dense_i(name='io')(inputs)
+  + dense_h(name='ho')(h))
+new_c = f * c + i * g
+new_h = o *  nn.tanh(new_c)
+\end{python}
+    \end{frame}
+
+    \begin{frame}[fragile]{Using Bender via Slurm}
+      \begin{python}
+      sbatch train_lstm_poet.sh
+      \end{python}
     \end{frame}
 
 
