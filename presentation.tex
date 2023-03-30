@@ -263,57 +263,19 @@
     \end{frame}
 
     \section{Applications}
-    \begin{frame}{Language Processing}
-      One hot encoding for letters. A possible encoding looks for all characters in a dataset.
-      The number of occurring characters determines the length of every one-hot character vector.
-      A system that accepts text and produces text, therefore, maps one-hot encoded sequences onto each other.
-    \end{frame}
-
-
-    \begin{frame}{Example: Machine Translation}
-      \cite{Bahdanau2015NeuralMT} used RNN for the task of machine translation.
-      \begin{figure}
-      \includegraphics[scale=0.3]{./figures/translation.png}
-      \caption{An RNN-based translation system. Figure from \cite{Bahdanau2015NeuralMT}.}
-      \end{figure}
-    \end{frame}
-
-    \begin{frame}{Neural attention in machine translation}
-      Attention weights group related inputs together,
-      allowing a decoder to find a suitable translation.
-      \begin{figure}
-      \includegraphics[scale=0.2]{./figures/attention.png}
-      \caption{Attention plots as observed in \cite{Bahdanau2015NeuralMT}.}
-      \end{figure}
-    \end{frame}
-
-    \begin{frame}{Neural Keyboard}
-      Given a sequence of input letters or words LSTM, for example, can model
-      the probability of the next letter or word.
-      \begin{align}
-        p_n(y_i| y_1, y_2, \dots , y_{i-1} = LSTM(y_{i-1}, c_{i-1}, h_{i-1})
-      \end{align}
-      This could, for example, help users type.
-    \end{frame}
-
-    \begin{frame}{Speech Processing \cite{chan2015listen}}
-      \begin{figure}
-        \includestandalone[width=.5\linewidth]{./figures/las_arc}
-      \end{figure}
-    \end{frame}
 
     \begin{frame}{Time-series forecasting}
-        \begin{figure}
-            \includestandalone[width=0.45\linewidth]{./figures/power_plot_intro}
-            \includegraphics[width=0.5\linewidth]{./figures/test_figure17.pdf}
-            \caption{Monovariate power-load and multivariate motion-capture time series data.}
-        \end{figure}
-    \note{
-    Example time series data plots. \\
-    Monovariate Belgian power load of January 2016. \\
-    Task: Load prediction. \\
-    Human3.6m walking motion sample. \\
-    Task: Motion prediction for robots. }
+      \begin{figure}
+          \includestandalone[width=0.45\linewidth]{./figures/power_plot_intro}
+          \includegraphics[width=0.5\linewidth]{./figures/test_figure17.pdf}
+          \caption{Monovariate power-load and multivariate motion-capture time series data.}
+      \end{figure}
+      \note{
+      Example time series data plots. \\
+      Monovariate Belgian power load of January 2016. \\
+      Task: Load prediction. \\
+      Human3.6m walking motion sample. \\
+      Task: Motion prediction for robots. }
     \end{frame}
 
     \begin{frame}{Day-ahead power-load}
@@ -332,16 +294,97 @@
               }
     \end{frame}
 
-    \begin{frame}{Mocap-Demo}
-      \href{run:./figures/mocap_demo.gif}{Link to mocap demo}
+    \begin{frame}{Language Processing}
+      One hot encoding for letters. A possible encoding looks for all characters in a dataset.
+      The number of occurring characters determines the length of every one-hot character vector.
+      A system that accepts text and produces text, therefore, maps one-hot encoded sequences onto each other.
+    \end{frame}
+
+    \begin{frame}{Neural Keyboard}
+      Given a sequence of input letters or words LSTM, for example, can model
+      the probability of the next letter or word.
+      \begin{align}
+        p_n(y_i| y_1, y_2, \dots , y_{i-1} = LSTM(y_{i-1}, c_{i-1}, h_{i-1})
+      \end{align}
+      This could, for example, help users type.
     \end{frame}
 
     \begin{frame}{Conclusion}
       \begin{itemize}
         \item RNNs are versatile and suitable for many different sentence processing tasks.
-        \item Let's explore a generative Language modeling example today.
+        \item But, there's more!
       \end{itemize}
     \end{frame}
+
+    \begin{frame}{Example: Machine Translation}
+      \cite{Bahdanau2015NeuralMT} used RNN for the task of machine translation.
+      \begin{figure}
+      \includegraphics[scale=0.3]{./figures/translation.png}
+      \caption{An RNN-based translation system. Figure from \cite{Bahdanau2015NeuralMT}.}
+      \end{figure}
+    \end{frame}
+
+    \begin{frame}{Neural attention in machine translation}
+      Attention weights group related inputs together,
+      allowing a decoder to find a suitable translation.
+      \begin{figure}
+      \includegraphics[scale=0.2]{./figures/attention.png}
+      \caption{Attention plots as observed by \cite{Bahdanau2015NeuralMT}.}
+      \end{figure}
+    \end{frame}
+
+    \begin{frame}{Speech Processing \cite{chan2015listen}}
+      \begin{figure}
+        \includestandalone[width=.5\linewidth]{./figures/las_arc}
+      \end{figure}
+    \end{frame}
+
+    \section{Neural Attention}
+    \begin{frame}{Bahadanau attention}
+      Proposed in \cite{Bahdanau2015NeuralMT},
+      \begin{align}
+        \mathbf{c}_i = \sum_{j=i}^{T_x} \alpha_{ij} \mathbf{h}_j
+      \end{align}
+      The idea is to find new $\alpha$s for every decoding time step $i$. 
+      These are computed using a softmax 
+      \begin{align}
+        \alpha_{ij} = \frac{\exp(e_{ij})}{\sum_{k=1}^{T_x} \exp(e_{ik})}
+      \end{align}
+      if the alignment model outputs $e_{ij} = a(s_{i-1}, h_j)$.
+      Finally, $a$ denotes a feedforward network function of the decoder state $\mathbf{s}_{i-1}$ and annotation $\mathbf{h}_j$.
+    \end{frame}
+
+    \begin{frame}{Transformers}
+      \begin{figure}
+        \includegraphics[width=.5\linewidth]{figures/transformer.png}
+        \caption{The transformer architecture as shown in \cite{vaswani2017attention}}
+      \end{figure}
+    \end{frame}
+
+    \begin{frame}{Transformers}
+      \cite{vaswani2017attention} defines dot product attention as,
+      \begin{align}
+        \mathbf{C} = \sigma_s(\frac{\mathbf{Q}\mathbf{K}^T}{\sqrt{d_k}})\mathbf{V}
+      \end{align}
+      With context $\mathbf{C} \in \mathbb{R}^{t,d_k}$, queries $\mathbf{Q} \in \mathbb{R}^{t,d_k}$, keys $\mathbf{K} \in \mathbb{R}^{t,d_k}$,
+      and values $ \mathbf{V} \in \mathbb{R}^{t,d_k}$. $ \sigma_s$ denots the softmax.
+      Alternatively the dot product of two vectors can be written as:
+      \begin{align}
+        \mathbf{q} \cdot \mathbf{k} = |\mathbf{q}| |\mathbf{k}| cos(\theta)
+      \end{align}
+      \includestandalone[scale=0.5]{./figures/cos}
+    \end{frame}
+
+
+
+    \begin{frame}{Conclusion}
+      \begin{itemize}
+        \item Transformers dominate large parts of modern deep learning.
+        \item Their versatility comes at the cost of an enourmous data hunger.
+        \item CNN and RNN are still often the better choice on smaller data-sets.
+      \end{itemize}
+    \end{frame}
+
 
     \begin{frame}[allowframebreaks]{Literature}
       \printbibliography
@@ -359,28 +402,14 @@
     \end{python}
     \end{frame}
 
-    \begin{frame}[fragile]{Implementing the cell equations of an LSTM}
-\begin{python}
-i = nn.sigmoid(dense_i(name='ii')(inputs)
-  + dense_h(name='hi')(h))
-f = nn.sigmoid(dense_i(name='if')(inputs)
-  + dense_h(name='hf')(h))
-g = nn.tanh(dense_i(name='ig')(inputs)
-  + dense_h(name='hg')(h))
-o = nn.sigmoid(dense_i(name='io')(inputs)
-  + dense_h(name='ho')(h))
-new_c = f * c + i * g
-new_h = o *  nn.tanh(new_c)
-\end{python}
-    \end{frame}
-
     \begin{frame}[fragile]{Using Bender via Slurm}
       \begin{python}
-      sbatch train_lstm_poet.sh
+  sbatch --reservation="mlcourse"
+         -p=A40short
+         train_lstm_poet.sh
       \end{python}
     \end{frame}
 
 
-    \subsection{Exercise: Play with generative Text models.}
 
 \end{document}
