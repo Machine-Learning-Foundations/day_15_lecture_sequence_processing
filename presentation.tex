@@ -339,7 +339,14 @@
       \end{figure}
     \end{frame}
 
-    \section{Neural Attention}
+    \begin{frame}{Attention weights}
+      \begin{figure}
+        \includestandalone[width=.8\linewidth]{./figures/alpha}
+        \caption{Attention weights for the speech processing example. On a TIMIT-recording.}
+      \end{figure}
+    \end{frame}
+
+    \section{Neural Attention and Transformers}
     \begin{frame}{Bahadanau attention}
       Proposed in \cite{Bahdanau2015NeuralMT},
       \begin{align}
@@ -368,23 +375,48 @@
       \end{align}
       With context $\mathbf{C} \in \mathbb{R}^{t,d_k}$, queries $\mathbf{Q} \in \mathbb{R}^{t,d_k}$, keys $\mathbf{K} \in \mathbb{R}^{t,d_k}$,
       and values $ \mathbf{V} \in \mathbb{R}^{t,d_k}$. $ \sigma_s$ denots the softmax.
+    \end{frame}
+
+    \begin{frame}{Matrix multiplication and dot products}
+      We can express matrix multiplication as dot products.
+      \begin{align}
+        \mathbf{Q}\mathbf{K} = 
+        \begin{pmatrix}
+          \mathbf{q}_{1, 1 \dots d_k} \cdot \mathbf{k}_{1 \dots d_k, 1} &  \mathbf{q}_{1, 1 \dots d_k} \cdot \mathbf{k}_{1 \dots d_k, 2} & \dots \\
+          \mathbf{q}_{2, 1 \dots d_k} \cdot \mathbf{k}_{1 \dots d_k, 1} &  \mathbf{q}_{2, 1 \dots d_k} \cdot \mathbf{k}_{1 \dots d_k, 2} & \dots \\
+          \vdots                                                        &  \vdots                                                        & \ddots \\
+        \end{pmatrix}
+      \end{align}
       Alternatively the dot product of two vectors can be written as:
       \begin{align}
         \mathbf{q} \cdot \mathbf{k} = |\mathbf{q}| |\mathbf{k}| cos(\theta)
       \end{align}
-      \includestandalone[scale=0.5]{./figures/cos}
+      \begin{figure}
+        \includestandalone[scale=0.5]{./figures/cos}
+      \end{figure}
     \end{frame}
 
+    %\begin{frame}{The dot product and correlation}
+    %
+    %\end{frame}
 
+
+    \begin{frame}{Denoising Diffusion Probabilistic Models}
+      \begin{figure}
+        \includegraphics[width=0.9\linewidth]{./figures/diffusion_example.png}
+        \caption{Diffusion models rely on a combination of unets and self attention \cite{ho2020denoising}.}
+      \end{figure}
+    \end{frame}
 
     \begin{frame}{Conclusion}
       \begin{itemize}
         \item Transformers dominate large parts of modern deep learning.
         \item Their versatility comes at the cost of an enourmous data hunger.
         \item CNN and RNN are still often the better choice on smaller data-sets.
+        \item In today's exercise you can choose to train a generative RNN or a generative
+         transformer.
       \end{itemize}
     \end{frame}
-
 
     \begin{frame}[allowframebreaks]{Literature}
       \printbibliography
@@ -401,15 +433,5 @@
       res.append(char_seq)
     \end{python}
     \end{frame}
-
-    \begin{frame}[fragile]{Using Bender via Slurm}
-      \begin{python}
-  sbatch --reservation="mlcourse"
-         -p=A40short
-         train_lstm_poet.sh
-      \end{python}
-    \end{frame}
-
-
 
 \end{document}
